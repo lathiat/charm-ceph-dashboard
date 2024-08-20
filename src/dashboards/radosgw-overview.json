@@ -83,14 +83,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(ceph_rgw_get_initial_lat_sum[30s]) / rate(ceph_rgw_get_initial_lat_count[30s])",
+          "expr": "rate(ceph_rgw_get_initial_lat_sum[$__rate_interval]) / rate(ceph_rgw_get_initial_lat_count[$__rate_interval])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "GET AVG",
           "refId": "A"
         },
         {
-          "expr": "rate(ceph_rgw_put_initial_lat_sum[30s]) / rate(ceph_rgw_put_initial_lat_count[30s])",
+          "expr": "rate(ceph_rgw_put_initial_lat_sum[$__rate_interval]) / rate(ceph_rgw_put_initial_lat_count[$__rate_interval])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "PUT AVG",
@@ -170,7 +170,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by(rgw_host) (label_replace(rate(ceph_rgw_req[30s]), \"rgw_host\", \"$1\", \"ceph_daemon\", \"rgw.(.*)\"))",
+          "expr": "sum by(rgw_host) (label_replace(rate(ceph_rgw_req[$__rate_interval]), \"rgw_host\", \"$1\", \"ceph_daemon\", \"rgw.(.*)\"))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{rgw_host}}",
@@ -252,7 +252,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "label_replace(rate(ceph_rgw_get_initial_lat_sum[30s]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\") / \nlabel_replace(rate(ceph_rgw_get_initial_lat_count[30s]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")",
+          "expr": "label_replace(rate(ceph_rgw_get_initial_lat_sum[$__rate_interval]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\") / \nlabel_replace(rate(ceph_rgw_get_initial_lat_count[$__rate_interval]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{rgw_host}}",
@@ -334,14 +334,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(ceph_rgw_get_b[30s]))",
+          "expr": "sum(rate(ceph_rgw_get_b[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "GETs",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(ceph_rgw_put_b[30s]))",
+          "expr": "sum(rate(ceph_rgw_put_b[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "PUTs",
@@ -422,7 +422,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by(rgw_host) (\n  (label_replace(rate(ceph_rgw_get_b[30s]), \"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")) + \n  (label_replace(rate(ceph_rgw_put_b[30s]), \"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\"))\n)",
+          "expr": "sum by(rgw_host) (\n  (label_replace(rate(ceph_rgw_get_b[$__rate_interval]), \"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")) + \n  (label_replace(rate(ceph_rgw_put_b[$__rate_interval]), \"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\"))\n)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{rgw_host}}",
@@ -503,7 +503,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "label_replace(rate(ceph_rgw_put_initial_lat_sum[30s]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\") / \nlabel_replace(rate(ceph_rgw_put_initial_lat_count[30s]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")",
+          "expr": "label_replace(rate(ceph_rgw_put_initial_lat_sum[$__rate_interval]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\") / \nlabel_replace(rate(ceph_rgw_put_initial_lat_count[$__rate_interval]),\"rgw_host\",\"$1\",\"ceph_daemon\",\"rgw.(.*)\")",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{rgw_host}}",
@@ -578,9 +578,9 @@
       },
       {
         "current": {
-        "tags": [],
-        "text": "default",
-        "value": "default"
+          "tags": [],
+          "text": "default",
+          "value": "default"
         },
         "hide": 0,
         "label": "Data Source",
@@ -626,5 +626,5 @@
   "timezone": "",
   "title": "RGW Overview",
   "uid": "WAkugZpiz",
-  "version": 2
+  "version": 4
 }

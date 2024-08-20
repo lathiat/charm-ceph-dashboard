@@ -248,7 +248,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "deriv(ceph_pool_objects[1m]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
+          "expr": "deriv(ceph_pool_objects[$__rate_interval]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Objects per second",
@@ -341,14 +341,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(ceph_pool_rd[1m]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
+          "expr": "rate(ceph_pool_rd[$__rate_interval]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "reads",
           "refId": "B"
         },
         {
-          "expr": "irate(ceph_pool_wr[1m]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
+          "expr": "rate(ceph_pool_wr[$__rate_interval]) * on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "writes",
@@ -441,14 +441,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(ceph_pool_rd_bytes[1m]) + on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
+          "expr": "rate(ceph_pool_rd_bytes[$__rate_interval]) + on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "reads",
           "refId": "A"
         },
         {
-          "expr": "irate(ceph_pool_wr_bytes[1m]) + on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
+          "expr": "rate(ceph_pool_wr_bytes[$__rate_interval]) + on(pool_id) group_left(instance,name) ceph_pool_metadata{name=~\"$pool_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "writes",
@@ -658,8 +658,8 @@
       "30d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Ceph Pool Details",
   "uid": "-xyV8KCiz",
-  "version": 1
+  "version": 3
 }

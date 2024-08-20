@@ -1,5 +1,4 @@
 {
-
   "__requires": [
     {
       "type": "grafana",
@@ -85,21 +84,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg (irate(ceph_osd_op_r_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_r_latency_count[1m]) * 1000)",
+          "expr": "avg (rate(ceph_osd_op_r_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_r_latency_count[$__rate_interval]) * 1000)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "AVG read",
           "refId": "A"
         },
         {
-          "expr": "max (irate(ceph_osd_op_r_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_r_latency_count[1m]) * 1000)",
+          "expr": "max (rate(ceph_osd_op_r_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_r_latency_count[$__rate_interval]) * 1000)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "MAX read",
           "refId": "B"
         },
         {
-          "expr": "quantile(0.95,\n  (irate(ceph_osd_op_r_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_r_latency_count[1m]) * 1000)\n)",
+          "expr": "quantile(0.95,\n  (rate(ceph_osd_op_r_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_r_latency_count[$__rate_interval]) * 1000)\n)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "@95%ile",
@@ -211,7 +210,7 @@
       ],
       "targets": [
         {
-          "expr": "topk(10,\n  (sort(\n    (irate(ceph_osd_op_r_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_r_latency_count[1m]) * 1000)\n  ))\n)\n\n",
+          "expr": "topk(10,\n  (sort(\n    (rate(ceph_osd_op_r_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_r_latency_count[$__rate_interval]) * 1000)\n  ))\n)\n\n",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -262,21 +261,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg (irate(ceph_osd_op_w_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_w_latency_count[1m]) * 1000)",
+          "expr": "avg (rate(ceph_osd_op_w_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_w_latency_count[$__rate_interval]) * 1000)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "AVG write",
           "refId": "A"
         },
         {
-          "expr": "max (irate(ceph_osd_op_w_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_w_latency_count[1m]) * 1000)",
+          "expr": "max (rate(ceph_osd_op_w_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_w_latency_count[$__rate_interval]) * 1000)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "MAX write",
           "refId": "B"
         },
         {
-          "expr": "quantile(0.95,\n (irate(ceph_osd_op_w_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_w_latency_count[1m]) * 1000)\n)",
+          "expr": "quantile(0.95,\n (rate(ceph_osd_op_w_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_w_latency_count[$__rate_interval]) * 1000)\n)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "@95%ile write",
@@ -388,7 +387,7 @@
       ],
       "targets": [
         {
-          "expr": "topk(10,\n  (sort(\n    (irate(ceph_osd_op_w_latency_sum[1m]) / on (ceph_daemon) irate(ceph_osd_op_w_latency_count[1m]) * 1000)\n  ))\n)\n\n",
+          "expr": "topk(10,\n  (sort(\n    (rate(ceph_osd_op_w_latency_sum[$__rate_interval]) / on (ceph_daemon) rate(ceph_osd_op_w_latency_count[$__rate_interval]) * 1000)\n  ))\n)\n\n",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -766,14 +765,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "round(sum(irate(ceph_pool_rd[30s])))",
+          "expr": "round(sum(rate(ceph_pool_rd[$__rate_interval])))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Reads",
           "refId": "A"
         },
         {
-          "expr": "round(sum(irate(ceph_pool_wr[30s])))",
+          "expr": "round(sum(rate(ceph_pool_wr[$__rate_interval])))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Writes",
@@ -823,21 +822,21 @@
   "tags": [],
   "templating": {
     "list": [
-        {
-          "current": {
+      {
+        "current": {
           "tags": [],
           "text": "default",
           "value": "default"
-          },
-          "hide": 0,
-          "label": "Data Source",
-          "name": "datasource",
-          "options": [],
-          "query": "prometheus",
-          "refresh": 1,
-          "regex": "",
-          "type": "datasource"
-        }
+        },
+        "hide": 0,
+        "label": "Data Source",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
     ]
   },
   "time": {
@@ -872,5 +871,5 @@
   "timezone": "",
   "title": "OSD Overview",
   "uid": "lo02I1Aiz",
-  "version": 3
+  "version": 5
 }

@@ -70,7 +70,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_bytes_sum[30s]))",
+          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_bytes_sum[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{source_zone}}",
@@ -151,7 +151,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_bytes_count[30s]))",
+          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_bytes_count[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{source_zone}}",
@@ -232,7 +232,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_poll_latency_sum[30s]) * 1000)",
+          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_poll_latency_sum[$__rate_interval]) * 1000)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{source_zone}}",
@@ -313,7 +313,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_errors[30s]))",
+          "expr": "sum by (source_zone) (rate(ceph_data_sync_from_zone_fetch_errors[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{source_zone}}",
@@ -388,9 +388,9 @@
       },
       {
         "current": {
-        "tags": [],
-        "text": "default",
-        "value": "default"
+          "tags": [],
+          "text": "default",
+          "value": "default"
         },
         "hide": 0,
         "label": "Data Source",
@@ -436,5 +436,5 @@
   "timezone": "",
   "title": "RGW Sync Overview",
   "uid": "rgw-sync-overview",
-  "version": 2
+  "version": 4
 }

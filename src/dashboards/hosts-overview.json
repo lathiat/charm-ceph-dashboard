@@ -184,7 +184,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg(\n  1 - (\n    avg by(dns_name) \n     (cpu_usage_idle{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\", cpu='cpu-total'} / 100)))",
+          "expr": "avg(\n  1 - (\n    avg by(instance) \n      (rate(node_cpu_seconds_total{mode='idle',instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}[$__rate_interval]) or\n       rate(node_cpu{mode='idle',instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}[$__rate_interval]))\n    )\n  )",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -267,7 +267,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg (((mem_total{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}) - (\n  (mem_free{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"})  + \n  (mem_cached{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}) + \n  (mem_buffered{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}) +\n  (mem_slab{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"})\n  )) /\n (mem_total{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}))",
+          "expr": "avg (((node_memory_MemTotal{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_MemTotal_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"})- (\n  (node_memory_MemFree{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_MemFree_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"})  + \n  (node_memory_Cached{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_Cached_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}) + \n  (node_memory_Buffers{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_Buffers_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}) +\n  (node_memory_Slab{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_Slab_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"})\n  )) /\n (node_memory_MemTotal{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"} or node_memory_MemTotal_bytes{instance=~\"($osd_hosts|$rgw_hosts|$mon_hosts|$mds_hosts).*\"} ))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -349,7 +349,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum ((irate(diskio_reads{dns_name=~\"($osd_hosts|$mds_hosts).*\"}[5m]))  + \n(irate(diskio_writes{dns_name=~\"($osd_hosts|$mds_hosts).*\"}[5m])))",
+          "expr": "sum ((rate(node_disk_reads_completed{instance=~\"($osd_hosts).*\"}[5m]) or rate(node_disk_reads_completed_total{instance=~\"($osd_hosts).*\"}[5m]) )  + \n(rate(node_disk_writes_completed{instance=~\"($osd_hosts).*\"}[5m]) or rate(node_disk_writes_completed_total{instance=~\"($osd_hosts).*\"}[5m])))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -431,7 +431,7 @@
       "tableColumn": "",
       "targets": [
         {
-	  "expr" : "avg (label_replace(label_replace((irate(diskio_io_time[5m]) / 10 ), \"device\", \"$1\", \"name\", \"(.+)\"), \"exported_instance\", \"$1\", \"host\", \"(.+)\") *  on(exported_instance, device) group_right(ceph_daemon) label_replace(ceph_disk_occupation{dns_name=~\"($osd_hosts|$mds_hosts).*\"}, \"device\", \"$1\", \"device\", \"/dev/(.*)\"))",
+          "expr": "avg (\n  label_replace((rate(node_disk_io_time_ms[$__rate_interval]) / 10 ) or\n   (rate(node_disk_io_time_seconds_total[$__rate_interval]) * 100), \"instance\", \"$1\", \"instance\", \"([^.:]*).*\"\n  ) *\n  on(instance, device) group_left(ceph_daemon) label_replace(label_replace(ceph_disk_occupation_human{instance=~\"($osd_hosts).*\"}, \"device\", \"$1\", \"device\", \"/dev/(.*)\"), \"instance\", \"$1\", \"instance\", \"([^.:]*).*\")\n)",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -514,7 +514,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum (\n  irate(net_bytes_recv{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[1m])\n) +\nsum (\n  irate(net_bytes_sent{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[1m]))",
+          "expr": "sum (\n  rate(node_network_receive_bytes{instance=~\"($osd_hosts|mon_hosts|mds_hosts|rgw_hosts).*\",device!=\"lo\"}[$__rate_interval]) or\n  rate(node_network_receive_bytes_total{instance=~\"($osd_hosts|mon_hosts|mds_hosts|rgw_hosts).*\",device!=\"lo\"}[$__rate_interval])\n  ) +\nsum (\n  rate(node_network_transmit_bytes{instance=~\"($osd_hosts|mon_hosts|mds_hosts|rgw_hosts).*\",device!=\"lo\"}[$__rate_interval]) or\n  rate(node_network_transmit_bytes_total{instance=~\"($osd_hosts|mon_hosts|mds_hosts|rgw_hosts).*\",device!=\"lo\"}[$__rate_interval])\n  )",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -572,10 +572,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(10,100 * (\n  1 - (\n    avg by(dns_name) \n     (cpu_usage_idle{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\", cpu='cpu-total'} / 100))))",
+          "expr": "topk(10,100 * ( 1 - (\n    avg by(instance) \n      (rate(node_cpu_seconds_total{mode='idle',instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}[$__rate_interval]) or\n       rate(node_cpu{mode='idle',instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\"}[$__rate_interval]))\n    )\n  )\n)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{dns_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
@@ -659,10 +659,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(10, (sum by(dns_name) (\n  (\n  irate(net_bytes_recv{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[1m])\n  ) +\n  (\n irate(net_bytes_sent{dns_name=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[1m])\n  ))\n  )\n)",
+          "expr": "topk(10, (sum by(instance) (\n  (\n  rate(node_network_receive_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[$__rate_interval]) or\n  rate(node_network_receive_bytes_total{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[$__rate_interval])\n  ) +\n  (\n  rate(node_network_transmit_bytes{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[$__rate_interval]) or\n  rate(node_network_transmit_bytes_total{instance=~\"($osd_hosts|$mon_hosts|$mds_hosts|$rgw_hosts).*\",device!=\"lo\"}[$__rate_interval])\n  ))\n  )\n)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{dns_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
@@ -848,5 +848,5 @@
   "timezone": "",
   "title": "Host Overview",
   "uid": "y0KGL0iZz",
-  "version": 3
+  "version": 5
 }
